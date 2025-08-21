@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi Raffinamento GPF - Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .metric-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .chart-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #FFD700;
+        }
+        
+        .results-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .conclusion {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        
+        .parameter-box {
+            background: rgba(0, 255, 136, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #00ff88;
+        }
+        
+        .outlier-box {
+            background: rgba(255, 165, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #FFA500;
+        }
+        
+        .trend-box {
+            background: rgba(135, 206, 250, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #87CEEB;
+        }
+        
+        .highlight {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        canvas {
+            max-width: 100%;
+            height: 300px !important;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .metric-value {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Analisi Raffinamento GPF</h1>
+            <p>Performance eccellenti su 181 cluster galattici</p>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">181</div>
+                <div class="metric-label">Cluster Analizzati</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">0.914</div>
+                <div class="metric-label">GPF Performance</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">0.954</div>
+                <div class="metric-label">Ibrido Performance</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">300.0</div>
+                <div class="metric-label">A_GPF Ottimale</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">6.1%</div>
+                <div class="metric-label">Outlier Rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">4.4%</div>
+                <div class="metric-label">Miglioramento Ibrido</div>
+            </div>
+        </div>
+        
+        <div class="charts-grid">
+            <div class="chart-container">
+                <div class="chart-title">Performance per Ricchezza</div>
+                <canvas id="ricchezzaChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Distribuzione Performance</div>
+                <canvas id="performanceChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Evoluzione con Scala</div>
+                <canvas id="scalaChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Analisi Chi-Quadro</div>
+                <canvas id="chiChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <h2 style="color: #FFD700; margin-bottom: 20px;">📊 Risultati Principali</h2>
+            <div class="results-grid">
+                <div class="parameter-box">
+                    <h3>🎯 Ottimizzazione Parametri</h3>
+                    <p><span class="highlight">A_GPF ottimale:</span> 300.0 M☉^0.5/kpc^1.5</p>
+                    <p><span class="highlight">Alpha scala:</span> 0.2000 (significativa)</p>
+                    <p><span class="highlight">Chi² ridotto:</span> 0.0808</p>
+                    <p><span class="highlight">Miglioramento:</span> Performance aumentata a 0.919</p>
+                </div>
+                
+                <div class="trend-box">
+                    <h3>📈 Analisi Tendenze</h3>
+                    <p><span class="highlight">Correlazione ricchezza GPF:</span> r = -0.943</p>
+                    <p><span class="highlight">Significatività:</span> p = 0.005</p>
+                    <p><span class="highlight">Slope trend:</span> -0.001758</p>
+                    <p><span class="highlight">Dipendenza scala:</span> Confermata (α = 0.2)</p>
+                </div>
+                
+                <div class="outlier-box">
+                    <h3>⚠️ Analisi Outlier</h3>
+                    <p><span class="highlight">Outlier totali:</span> 11/181 (6.1%)</p>
+                    <p><span class="highlight">Ricchezza media outlier:</span> 45 vs 54</p>
+                    <p><span class="highlight">Redshift medio:</span> 0.123 vs 0.140</p>
+                    <p><span class="highlight">Ratio GPF outlier:</span> 0.493 vs 0.914</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <h2 style="color: #FFD700; margin-bottom: 20px;">📋 Analisi per Fasce di Ricchezza</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h4>λ = 30-40</h4>
+                    <p>N: 64 | GPF: 0.929 | Ibrido: 0.967</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h4>λ = 40-50</h4>
+                    <p>N: 33 | GPF: 0.921 | Ibrido: 0.961</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h4>λ = 50-65</h4>
+                    <p>N: 41 | GPF: 0.921 | Ibrido: 0.963</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h4>λ = 65-80</h4>
+                    <p>N: 21 | GPF: 0.936 | Ibrido: 0.980</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h4>λ = 80-100</h4>
+                    <p>N: 15 | GPF: 0.852 | Ibrido: 0.894</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h4>λ = 130-200</h4>
+                    <p>N: 5 | GPF: 0.730 | Ibrido: 0.771</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="conclusion">
+            <h2>🏆 CONCLUSIONI</h2>
+            <p>La GPF mostra performance eccellenti con una correlazione significativa alla ricchezza. Il modello ibrido raggiunge quasi il perfetto accordo con un miglioramento del 4.4%. La dipendenza dalla scala (α = 0.2) è statisticamente significativa e migliora ulteriormente le predizioni.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Chart.js configurations with modern styling
+        Chart.defaults.color = '#ffffff';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+        
+        // Performance per Ricchezza
+        const ricchezzaData = {
+            labels: ['30-40', '40-50', '50-65', '65-80', '80-100', '130-200'],
+            datasets: [{
+                label: 'GPF Performance',
+                data: [0.929, 0.921, 0.921, 0.936, 0.852, 0.730],
+                borderColor: '#00ff88',
+                backgroundColor: 'rgba(0, 255, 136, 0.2)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Ibrido Performance',
+                data: [0.967, 0.961, 0.963, 0.980, 0.894, 0.771],
+                borderColor: '#FFD700',
+                backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                tension: 0.4,
+                fill: true
+            }]
+        };
+        
+        new Chart(document.getElementById('ricchezzaChart'), {
+            type: 'line',
+            data: ricchezzaData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { color: '#ffffff' }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Fascia Ricchezza (λ)',
+                            color: '#ffffff'
+                        },
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Performance',
+                            color: '#ffffff'
+                        },
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        min: 0.7,
+                        max: 1.0
+                    }
+                }
+            }
+        });
+        
+        // Distribuzione Performance
+        const performanceData = {
+            labels: ['GPF Mean', 'GPF ±σ', 'Ibrido Mean', 'Ibrido ±σ'],
+            datasets: [{
+                data: [0.914, 0.273, 0.954, 0.285],
+                backgroundColor: [
+                    'rgba(0, 255, 136, 0.8)',
+                    'rgba(0, 255, 136, 0.4)',
+                    'rgba(255, 215, 0, 0.8)',
+                    'rgba(255, 215, 0, 0.4)'
+                ],
+                borderColor: [
+                    '#00ff88',
+                    '#00ff88',
+                    '#FFD700',
+                    '#FFD700'
+                ],
+                borderWidth: 2
+            }]
+        };
+        
+        new Chart(document.getElementById('performanceChart'), {
+            type: 'doughnut',
+            data: performanceData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#ffffff' }
+                    }
+                }
+            }
+        });
+        
+        // Evoluzione con Scala
+        const scalaData = {
+            labels: ['Base', 'Scala α=0.2', 'Miglioramento'],
+            datasets: [{
+                label: 'Chi² Value',
+                data: [0.0818, 0.0808, 0.001],
+                backgroundColor: ['#FF6B6B', '#4ECDC4', '#45B7D1'],
+                borderColor: ['#FF5252', '#26A69A', '#2196F3'],
+                borderWidth: 2
+            }]
+        };
+        
+        new Chart(document.getElementById('scalaChart'), {
+            type: 'bar',
+            data: scalaData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chi² Ridotto',
+                            color: '#ffffff'
+                        },
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                }
+            }
+        });
+        
+        // Chi-Quadro Analysis
+        const chiData = {
+            labels: ['Pre-ottimizzazione', 'Post A-ottimizzazione', 'Post Scala-ottimizzazione'],
+            datasets: [{
+                label: 'Chi² Ridotto',
+                data: [0.0900, 0.0818, 0.0808],
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2
+            }]
+        };
+        
+        new Chart(document.getElementById('chiChart'), {
+            type: 'line',
+            data: chiData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        ticks: { 
+                            color: '#ffffff',
+                            maxRotation: 45
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chi² Value',
+                            color: '#ffffff'
+                        },
+                        ticks: { color: '#ffffff' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 6,
+                        backgroundColor: '#FF6384'
+                    },
+                    line: {
+                        tension: 0.4
+                    }
+                }
+            }
+        });
+        
+        // Add smooth animations
+        document.querySelectorAll('.metric-card').forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.style.animation = 'slideInUp 0.6s ease forwards';
+        });
+        
+        // CSS Animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
