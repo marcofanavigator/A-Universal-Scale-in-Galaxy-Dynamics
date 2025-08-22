@@ -73,6 +73,11 @@ This work is the result of a **hybrid intelligence process**:
 
 Together, we explored data, tested models, refined methods, and produced this work in record time.  
 
-**This project is dedicated to the idea that science belongs to everyone.**  
+**This project is dedicated to the idea that science belongs to everyone.** 
+
+## 🌍 Get Involved
+- ⭐ Star this repo if you find the idea inspiring
+- 🐛 Open issues for feedback or critiques
+- 🔄 Fork to test, replicate, or challenge the model
 
 ---
