@@ -48,6 +48,8 @@ This is a proof-of-concept of **hybrid science**:
 - **High richness (λ > 130):** performance decreases (GPF = 0.730)  
 - **Outliers:** mostly low-richness, low-redshift clusters  
 
+
+![gpf_analysis_complete](./gpf_analysis_complete_final.png)
 ---
 
 ### 💡 Implications
