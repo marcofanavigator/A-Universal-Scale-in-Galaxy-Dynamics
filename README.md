@@ -65,16 +65,6 @@ Using k-NN density estimation, Random Forest, and topological network analysis, 
 
 ---
 
-## 📄 Paper
-
-The full scientific paper is available here:  
-👉 [A Universal Scale in Galaxy Dynamics (PDF)](https://github.com/marcofanavigator/A-Universal-Scale-in-Galaxy-Dynamics/blob/main/A%20Universal%20Scale%20in%20Galaxy%20Dynamics.pdf)
-
-It includes:
-- Full methodology (k-NN, Random Forest, topological analysis)
-- Cross-survey validation
-- Discussion on ΛCDM complementarity
-- Open code and data
 
 ---
 
