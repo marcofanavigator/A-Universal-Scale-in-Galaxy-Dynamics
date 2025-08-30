@@ -106,6 +106,5 @@ This is not the end — it’s an invitation.
 
 Let’s see where this leads.
 
----
 
-## 📁 Repository Structure
+
